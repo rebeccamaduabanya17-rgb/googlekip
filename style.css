@@ -309,3 +309,98 @@ input:focus {
 .open-modal {
   visibility: visible;
 }
+.dark .form-container,
+.dark .note {
+  background: #303134 !important;
+  color: white !important;
+  border: 1px solid #5f6368;
+}
+/* DARK MODE */
+.dark {
+  background: #202124;
+  color: white;
+}
+
+.dark nav {
+  background: #202124;
+  border-color: #5f6368;
+}
+
+.dark .form-container,
+.dark .note {
+  background: #303134;
+  color: white;
+  border: 1px solid #5f6368;
+}
+
+.dark input,
+.dark textarea {
+  background: #303134;
+  color: white;
+}
+
+.dark .sidebar {
+  background: #202124;
+}
+
+.dark .search-area {
+  background: #303134;
+}
+
+.dark .search-area input {
+  background: #303134;
+  color: white;
+}
+@media(max-width:768px){
+
+nav{
+  flex-wrap:wrap;
+}
+
+.search-area{
+  width:100%;
+  order:3;
+}
+
+.sidebar{
+  display:none;
+}
+
+.form-container{
+  width:90%;
+}
+
+.notes{
+  padding:10px;
+}
+
+.note{
+  width:90%;
+}
+
+.settings-area,
+.profile-actions-area{
+  display:none;
+}
+
+}
+/* Fix note text visibility in dark mode */
+.note .title,
+.note .text {
+  width: 100%;
+  margin-left: 15px;
+  color: #202124;
+}
+
+.dark .note .title,
+.dark .note .text {
+  color: white !important;
+}
+
+.dark .note-footer .material-symbols-outlined {
+  color: white;
+}
+
+.dark .close-btn {
+  color: white;
+}

@@ -39,7 +39,11 @@
           <span class="material-symbols-outlined hover">search</span>
           <span class="tooltip-text">Search</span>
         </div>
-        <input type="text" placeholder="Search" />
+        <input 
+          type="text" 
+          id="search-input"
+          placeholder="Search" 
+        />
       </div>
       <div class="settings-area">
         <div class="tooltip">
@@ -53,6 +57,15 @@
         <div class="tooltip">
           <span class="material-symbols-outlined hover">settings</span>
           <span class="tooltip-text">Settings</span>
+        </div>
+        <div class="tooltip">
+          <span
+            class="material-symbols-outlined hover"
+            id="dark-mode-btn"
+          >
+            dark_mode
+          </span>
+          <span class="tooltip-text">Dark Mode</span>
         </div>
       </div>
       <div class="profile-actions-area">
@@ -140,11 +153,19 @@
                 <span class="tooltip-text">Collaborator</span>
               </div>
               <div class="tooltip">
-                <span class="material-symbols-outlined hover small-icon"
-                  >palette</span
-                >
+                <label for="note-color" style="cursor: pointer; display: flex; align-items: center;">
+                  <span class="material-symbols-outlined hover small-icon">
+                    palette
+                  </span>
+                </label>
                 <span class="tooltip-text">Change Color</span>
               </div>
+              <input
+                type="color"
+                id="note-color"
+                value="#ffffff"
+                style="width:30px;height:30px;border:none;background:none;cursor:pointer;display:none;"
+              >
               <div class="tooltip">
                 <span class="material-symbols-outlined hover small-icon"
                   >image</span
@@ -176,7 +197,7 @@
                 <span class="tooltip-text">Redo</span>
               </div>
             </div>
-            <button class="close-btn">close</button>
+            <button type="submit" class="close-btn">Close</button>
           </div>
         </form>
       </div>
@@ -250,7 +271,7 @@
                     <span class="tooltip-text">Redo</span>
                   </div>
                 </div>
-                <button class="close-btn" id="modal-btn">close</button>
+                <button type="submit" class="close-btn" id="modal-btn">Close</button>
               </div>
             </form>
           </div>

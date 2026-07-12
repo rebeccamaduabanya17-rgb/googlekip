@@ -3,13 +3,12 @@ class Note {
     this.id = id;
     this.title = title;
     this.text = text;
+    this.color = '#ffffff';
   }
 }
 
 class App {
   constructor() {
-    // localStorage.setItem('test', JSON.stringify(['123']));
-    // console.log(JSON.parse(localStorage.getItem('test')));
     this.notes = JSON.parse(localStorage.getItem("notes")) || [];
     this.selectedNoteId = "";
     this.miniSidebar = true;
@@ -27,6 +26,12 @@ class App {
     this.$closeModalForm = document.querySelector("#modal-btn");
     this.$sidebar = document.querySelector(".sidebar");
     this.$sidebarActiveItem = document.querySelector(".active-item");
+    this.$search = document.querySelector(".search-area input");
+    this.$darkModeBtn = document.querySelector("#dark-mode-btn");
+    // Load dark mode preference
+    if (localStorage.getItem("theme") == "dark") {
+      document.body.classList.add("dark");
+    }
 
     this.addEventListeners();
     this.displayNotes();
@@ -38,6 +43,7 @@ class App {
       this.closeModal(event);
       this.openModal(event);
       this.handleArchiving(event);
+      this.handleColorChange(event);
     });
 
     this.$form.addEventListener("submit", (event) => {
@@ -59,6 +65,24 @@ class App {
     this.$sidebar.addEventListener("mouseout", (event) => {
       this.handleToggleSidebar();
     });
+
+    // FEATURE 1 (MANUAL): Search Notes
+    this.$search.addEventListener("keyup", (event) => {
+      this.searchNotes(event.target.value);
+    });
+
+    // FEATURE 2 (AI): Dark Mode Toggle
+    if (this.$darkModeBtn) {
+      this.$darkModeBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+
+        if (document.body.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+        } else {
+          localStorage.setItem("theme", "light");
+        }
+      });
+    }
   }
 
   handleFormClick(event) {
@@ -90,7 +114,7 @@ class App {
 
   openModal(event) {
     const $selectedNote = event.target.closest(".note");
-    if ($selectedNote && !event.target.closest(".archive")) {
+    if ($selectedNote && !event.target.closest(".archive") && !event.target.closest(".color-btn")) {
       this.selectedNoteId = $selectedNote.id;
       this.$modalTitle.value = $selectedNote.children[1].innerHTML;
       this.$modalText.value = $selectedNote.children[2].innerHTML;
@@ -124,6 +148,15 @@ class App {
       this.deleteNote(this.selectedNoteId);
     } else {
       return;
+    }
+  }
+
+  // FEATURE 3 (AI): Change Note Color
+  handleColorChange(event) {
+    const $selectedNote = event.target.closest(".note");
+    if ($selectedNote && event.target.closest(".color-btn")) {
+      this.selectedNoteId = $selectedNote.id;
+      this.changeColor(this.selectedNoteId);
     }
   }
 
@@ -185,14 +218,22 @@ class App {
     this.displayNotes();
   }
 
-//  onmouseover="app.handleMouseOverNote(this)" onmouseout="app.handleMouseOutNote(this)"
+  // FEATURE 1 (MANUAL): Search Notes
+  searchNotes(searchText) {
+    const filteredNotes = this.notes.filter(note =>
+      note.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      note.text.toLowerCase().includes(searchText.toLowerCase())
+    );
 
-  displayNotes() {
-    this.$notes.innerHTML = this.notes
+    this.displayFilteredNotes(filteredNotes);
+  }
+
+  displayFilteredNotes(notesToDisplay) {
+    this.$notes.innerHTML = notesToDisplay
       .map(
         (note) =>
           `
-        <div class="note" id="${note.id}">
+        <div class="note" id="${note.id}" style="background-color: ${note.color || '#ffffff'}">
           <span class="material-symbols-outlined check-circle"
             >check_circle</span
           >
@@ -242,8 +283,85 @@ class App {
       .join("");
   }
 
+//  onmouseover="app.handleMouseOverNote(this)" onmouseout="app.handleMouseOutNote(this)"
+
+  displayNotes() {
+    this.$notes.innerHTML = this.notes
+      .map(
+        (note) =>
+          `
+        <div class="note" id="${note.id}" style="background-color: ${note.color || '#ffffff'}">
+          <span class="material-symbols-outlined check-circle"
+            >check_circle</span
+          >
+          <div class="title">${note.title}</div>
+          <div class="text">${note.text}</div>
+          <div class="note-footer">
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >add_alert</span
+              >
+              <span class="tooltip-text">Remind me</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >person_add</span
+              >
+              <span class="tooltip-text">Collaborator</span>
+            </div>
+            <div class="tooltip color-btn">
+              <span class="material-symbols-outlined hover small-icon"
+                >palette</span
+              >
+              <span class="tooltip-text">Change Color</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >image</span
+              >
+              <span class="tooltip-text">Add Image</span>
+            </div>
+            <div class="tooltip archive">
+              <span class="material-symbols-outlined hover small-icon"
+                >archive</span
+              >
+              <span class="tooltip-text">Archive</span>
+            </div>
+            <div class="tooltip">
+              <span class="material-symbols-outlined hover small-icon"
+                >more_vert</span
+              >
+              <span class="tooltip-text">More</span>
+            </div>
+          </div>
+        </div>
+        `
+      )
+      .join("");
+  }
+
   deleteNote(id) {
     this.notes = this.notes.filter((note) => note.id != id);
+    this.render();
+  }
+
+  // FEATURE 3 (AI): Change Note Color
+  changeColor(id) {
+    const colors = [
+      "#ffffff",
+      "#f28b82",
+      "#fbbc04",
+      "#fff475",
+      "#ccff90",
+      "#a7ffeb",
+      "#cbf0f8",
+      "#aecbfa",
+      "#d7aefb"
+    ];
+
+    const note = this.notes.find(n => n.id === id);
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    note.color = randomColor;
     this.render();
   }
 }
